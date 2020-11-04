@@ -16,7 +16,7 @@ class Main:
 
     def Input(self):
         showinfo("About and Help", "This program is to plot a simple number line graph for visualizing the inequalities of x, \nuse the combobox widget to select the particular symbol pertaining to the value range \nof 'x', i.e '>' for greater tha, '<' for less than, '<=' for less than or equal to and '>=' for greater than or equal to \nand then input the number (the object of x (the number range with respect to the symbol for the combobox)) \n then click submit in order to see the graph plotted. Made by: Praise James (www.github.com/Trojancipher/)")
-        global entry, selected
+        global  selected, Entry
         banner = Label(self.root, text = "INPUT THE STATEMENT", bg = "black", fg = "white").pack()
         x = Label(self.root, text = "X", fg = "green", font = ("Calibri", 20, "bold"))
         x.pack(pady = 16, padx = 10)
@@ -24,24 +24,23 @@ class Main:
         selected = ttk.Combobox(self.root, width = 9, textvariable = inequality_symbol, state = 'readonly')
         selected['values'] = ('<', '>', '<=', '>=')
         selected.pack(pady = 16, padx = 15)
-        entry = Text(width = 8, height = 2, wrap = WORD)
-        entry.pack(pady = 16, padx = 25)
-        entry.focus_set()
+        Entry = Spinbox(root, from_ = -2, to = 12, width  = 8, bd = 6)
+        Entry.pack(pady = 16, padx = 25)
         Btn = Button(self.root, text = "SUBMIT", command = lambda: self.Submit()).pack()
 
+        
     def Submit(self):
-        global statement
-        statement = entry.get(0.0, END)
-        if statement:
-            self.draw()
-            self.plot(statement)
-            root.destroy()
+        self.draw()
+        self.plot(Entry.get())
+        root.destroy()
 
     def draw(self):
         global screen
         pygame.init()
         screen = pygame.display.set_mode((800, 600))
         pygame.display.set_caption('Numline plot')
+        bg = pygame.image.load("abstract.jpg")
+        screen.blit(bg, [0, 0])
         font = pygame.font.SysFont('Helvetica', 15)
         BLUE = (80, 80, 255)
         WHITE = (255, 255, 255)
@@ -81,6 +80,7 @@ class Main:
         dict_ = {-12: 160, -11: 180, -10: 200, -9:223, -8:243, -7:263, -6:283, -5:303, -4:326, -3:346, -2:366, -1:386, 0:407, 1:427, 2:447, 3:467, 4:487, 5:507, 6:527, 7:547, 8:567, 9:587, 10:607, 11:627, 12:647}
         _dict = range(-12, 12)
         num = int(statement)
+        print(num)
         for i in _dict:
             if num == i:
                 x = dict_[num]
@@ -96,7 +96,11 @@ class Main:
                 elif selected.get() == ">":
                     pygame.draw.circle(screen, RED, (x, 380), 7, 1)
                     pygame.draw.line(screen, RED, (x, 380), (640, 380), 3)
-        pygame.display.update()
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    quit()
+            pygame.display.update()
 
 if __name__=='__main__':
     Main()
